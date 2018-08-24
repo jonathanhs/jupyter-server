@@ -1,0 +1,16 @@
+sudo: required
+services:
+    - docker
+env:
+    - DOCKER_ID=jonathanhs
+script:
+    - docker build -t $DOCKER_ID/jupyter-server:python3 .
+after_success:
+    - docker images
+before_deploy:
+    - echo $DOCKER_KEY | docker login -u $DOCKER_ID --password-stdin
+deploy:
+    provider: script
+    script: docker push $DOCKER_ID/jupyter-server:python3
+    on:
+        branch: master
